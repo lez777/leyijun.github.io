@@ -10,8 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="去繁从简–前端框架的一点理解工作以来接触过目前主流的框架包括vue、react、angular1.x及公司内部原生js+requirejs集合的一些功能模块。前端这几年在快速发展中，新的东西层出不穷，连包管理工具出了有npm，还可以选择yarn等。这么多新的东西，新的思想，促使我们不断学习。
-待下次">
+        <meta name="description" content="websocket使用的一点心得最近在做一个湖南人行助农取款监控的项目，目的是将湖南银联的交易准实时的显示在地图上的具体位置和具体交易信息。
+准实时是因为没办法做到实时。。。因为全省通过银联的取款交易笔数每天最少也有百万级。假设前端每秒显示一条信息，一天最多显示交易笔数为246060=86400,况">
     
 
     <!--Author-->
@@ -21,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="我的程序员之路"/>
+        <meta property="og:title" content="websocket准实时的监控推送"/>
     
 
     <!--Open Graph Description-->
@@ -43,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>我的程序员之路 - Yijun Le</title>
+    <title>websocket准实时的监控推送 - Yijun Le</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
@@ -145,7 +145,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>我的程序员之路</h1>
+                    <h1>websocket准实时的监控推送</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -172,7 +172,7 @@
                         
 
 
-<a href="/tags/程序员/">#程序员</a>
+<a href="/tags/技术/">#技术</a>
 
 
                     
@@ -181,7 +181,7 @@
                     
                         
 
-<a href="/categories/生活/">生活</a>/ <a href="/categories/生活/随想/">随想</a>
+<a href="/categories/方案/">方案</a>/ <a href="/categories/方案/前端/">前端</a>
 
                     
                 </div>
@@ -192,8 +192,13 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <h3 id="去繁从简–前端框架的一点理解"><a href="#去繁从简–前端框架的一点理解" class="headerlink" title="去繁从简–前端框架的一点理解"></a>去繁从简–前端框架的一点理解</h3><p>工作以来接触过目前主流的框架包括vue、react、angular1.x及公司内部原生js+requirejs集合的一些功能模块。前端这几年在快速发展中，新的东西层出不穷，连包管理工具出了有npm，还可以选择yarn等。这么多新的东西，新的思想，促使我们不断学习。</p>
-<p>待下次编辑。。。</p>
+                <h3 id="websocket使用的一点心得"><a href="#websocket使用的一点心得" class="headerlink" title="websocket使用的一点心得"></a>websocket使用的一点心得</h3><p>最近在做一个湖南人行助农取款监控的项目，目的是将湖南银联的交易准实时的显示在地图上的具体位置和具体交易信息。</p>
+<p>准实时是因为没办法做到实时。。。因为全省通过银联的取款交易笔数每天最少也有百万级。假设前端每秒显示一条信息，一天最多显示交易笔数为24<em>60</em>60=86400,况且人眼接受一段交易信息的时间远大于1秒。</p>
+<p>经过和后台人员沟通协商，我们我们决定根据交易时间，交易金额，交易地址对一段时间内（如10分钟）的交易进行采集并排序，后台采用双端队列每隔5秒进行推送，10分钟内没有推送完，就丢弃，直接推送下面10分钟的交易。</p>
+<p>选用websocket是因为一次连接，多次双工通信。如果用轮询，通信效率较低，一次拿多条数据，对前端页面的压力会很大（系统已经缓存很多Echarts、高德地图海量点等模块）。</p>
+<p>实际用起来确实websocket很方便，但是却有个坑考虑了很久。</p>
+<p>该监控会投LED大屏幕，希望网络链路非正常断开后，可以自动重连。无法通过浏览器实时判断链路因外界因素断开。思前想后很久，用了一套心跳机制实现了断线重连的逻辑。以下是实现的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line">socket: function() &#123;</div><div class="line">      const self = this</div><div class="line">      if (!(&apos;WebSocket&apos; in window)) &#123;</div><div class="line">        Message(&#123;</div><div class="line">          message: &apos;您的浏览器太老啦！建议升级浏览器以支持实时监控功能！&apos;,</div><div class="line">          type: &apos;error&apos;,</div><div class="line">          duration: 5 * 1000</div><div class="line">        &#125;)</div><div class="line">        return</div><div class="line">      &#125;</div><div class="line">      if (!this.notificationSocket) &#123;</div><div class="line">        let ws = new WebSocket(process.env.WEBSOCKET_API)</div><div class="line">        self.ws = ws</div><div class="line">        ws.last_health_time = -1 // 上一次心跳时间</div><div class="line">        ws.keepalive = function() &#123;</div><div class="line">          const time = new Date().getTime()</div><div class="line">          if (ws.last_health_time !== -1 &amp;&amp; time - ws.last_health_time &gt; 20000) &#123; // 不是刚开始连接并且20s</div><div class="line">            ws.close()</div><div class="line">          &#125; else &#123;</div><div class="line">            // 如果断网了，ws.send会无法发送消息出去。ws.bufferedAmount不会为0。</div><div class="line">            if (ws.bufferedAmount === 0 &amp;&amp; ws.readyState === 1) &#123;</div><div class="line">              ws.send(&apos;h&amp;b&apos;)</div><div class="line">              ws.last_health_time = time</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">        if (ws) &#123;</div><div class="line">          let reconnect = 0 // 重连的时间</div><div class="line">          let reconnectMark = false // 是否重连过</div><div class="line">          this.notificationSocket = true</div><div class="line">          ws.onopen = () =&gt; &#123;</div><div class="line">            ws.send(&apos;longToken:&apos; + this.JSessionId)</div><div class="line">            reconnect = 0</div><div class="line">            reconnectMark = false</div><div class="line">            ws.receiveMessageTimer = setTimeout(() =&gt; &#123;</div><div class="line">              ws.close()</div><div class="line">            &#125;, 30000) // 30s没收到信息，代表服务器出问题了，关闭连接。如果收到消息了，重置该定时器。</div><div class="line">            if (ws.readyState === 1) &#123; // 为1表示连接处于open状态</div><div class="line">              ws.keepAliveTimer = setInterval(() =&gt; &#123;</div><div class="line">                ws.keepalive()</div><div class="line">              &#125;, 1000)</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">          ws.onerror = () =&gt; &#123;</div><div class="line">            console.error(&apos;onerror&apos;)</div><div class="line">          &#125;</div><div class="line">          ws.onmessage = (msg) =&gt; &#123;</div><div class="line">            setInterval(self.monitor.count++, 1500)</div><div class="line">            const markerMsg = JSON.parse(msg.data)</div><div class="line">            self.markerInfo = &#123;</div><div class="line">              position: [markerMsg.position[0], markerMsg.position[1]],</div><div class="line">              mchntNm: markerMsg.mchntNm,</div><div class="line">              amount: markerMsg.amount,</div><div class="line">              placeName: markerMsg.placeName,</div><div class="line">              placeDetail: markerMsg.placeDetail,</div><div class="line">              acquirer: markerMsg.acquirer</div><div class="line">            &#125;</div><div class="line">            self.monitor.message = &apos;交易商户：&apos; + markerMsg.mchntNm + &apos;  交易金额：&apos; + markerMsg.amount + &apos;元  交易地点：&apos; + markerMsg.placeName + &apos; 收单机构：&apos; + markerMsg.acquirer</div><div class="line">            // console.log(self.$refs.marquee)</div><div class="line">            // 收到消息，重置定时器</div><div class="line">            clearTimeout(ws.receiveMessageTimer)</div><div class="line">            ws.receiveMessageTimer = setTimeout(() =&gt; &#123;</div><div class="line">              ws.close()</div><div class="line">            &#125;, 30000) // 30s没收到信息，代表服务器出问题了，关闭连接。</div><div class="line">          &#125;</div><div class="line">          ws.onclose = () =&gt; &#123;</div><div class="line">            clearTimeout(ws.receiveMessageTimer)</div><div class="line">            clearInterval(ws.keepAliveTimer)</div><div class="line">            if (!reconnectMark &amp;&amp; this.activeClose === false) &#123; // 如果没有重连过，且不是主动断开，进行重连。</div><div class="line">              reconnect = new Date().getTime()</div><div class="line">              reconnectMark = true</div><div class="line">            &#125;</div><div class="line">            const tempWs = ws // 保存ws对象</div><div class="line">            if ((this.activeClose === true)) &#123; // 不是主动断开，重连，连不上就不连了</div><div class="line">              ws.close()</div><div class="line">            &#125; else &#123;</div><div class="line">              ws = new WebSocket(process.env.WEBSOCKET_API)</div><div class="line">              self.ws = ws</div><div class="line">              ws.onopen = tempWs.onopen</div><div class="line">              ws.onmessage = tempWs.onmessage</div><div class="line">              ws.onerror = tempWs.onerror</div><div class="line">              ws.onclose = tempWs.onclose</div><div class="line">              ws.keepalive = tempWs.keepalive</div><div class="line">              ws.last_health_time = -1</div><div class="line">              this.notificationSocket = true</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>逻辑还是有点绕的。。后续有心思了再文字整理，先记录下来吧！</p>
 
 
                 

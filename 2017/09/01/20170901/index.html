@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="前端框架up.js的前端路由模块工作以来接触过目前主流的框架包括vue、react、angular1.x及公司内部原生js+up.js集合的一些功能模块。该篇主要介绍下银联全渠道前端单页路由的实现。话不多说，直接贴代码12345678910111213141516171819202122232425">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Ash L">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="单页路由是怎么实现的"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Yijun Le"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>单页路由是怎么实现的 - Yijun Le</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+    <!-- favicon -->
+    
+	
+</head>
+
+
+<body>
+
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">LYJ's Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/archives">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/categories">
+                            
+                                Categories
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>单页路由是怎么实现的</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2017-09-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 post-tags">
+                    
+                        
+
+
+<a href="/tags/技术/">#技术</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                        
+
+<a href="/categories/前端/">前端</a>/ <a href="/categories/前端/js/">js</a>
+
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h3 id="前端框架up-js的前端路由模块"><a href="#前端框架up-js的前端路由模块" class="headerlink" title="前端框架up.js的前端路由模块"></a>前端框架up.js的前端路由模块</h3><p>工作以来接触过目前主流的框架包括vue、react、angular1.x及公司内部原生js+up.js集合的一些功能模块。该篇主要介绍下银联全渠道前端单页路由的实现。话不多说，直接贴代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div></pre></td><td class="code"><pre><div class="line">//精简前端路由</div><div class="line">    var router = function()&#123;</div><div class="line">        return this.init.apply(this, arguments);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    router.run = function()&#123;</div><div class="line">        var url = location.hash.slice(1) || &apos;!&apos;;</div><div class="line"></div><div class="line">        url = mymvc.util.url(url).url;</div><div class="line"></div><div class="line">        (function()&#123;</div><div class="line"></div><div class="line">            var cardNumberLocked = $(&quot;.do-return&quot;).attr(&quot;data-locked&quot;);</div><div class="line">            var frontFailUrl = $(&quot;.do-return&quot;).attr(&quot;data-ref&quot;);</div><div class="line"></div><div class="line">            if(cardNumberLocked == &quot;true&quot;)&#123;</div><div class="line">                // 如果是卡号锁定情况下，如果是这几个</div><div class="line">                if(url == &quot;!cardPay&quot; || url == &quot;!foreignPay&quot; || url == &quot;!cardOpenAndPay&quot; || url == &quot;!prepaidCard&quot; || url == &quot;!crbePay&quot; || url == &quot;!cardOpen&quot;)&#123;</div><div class="line">                    if(!frontFailUrl)&#123;</div><div class="line">                        $(&quot;.do-return&quot;).addClass(&quot;hide&quot;);</div><div class="line">                    &#125;else&#123;</div><div class="line">                        $(&quot;.do-return&quot;).removeClass(&quot;hide&quot;);</div><div class="line">                    &#125;</div><div class="line">                &#125;else&#123;</div><div class="line">                    $(&quot;.do-return&quot;).addClass(&quot;hide&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;else if(url == &quot;!cardIndex&quot; || url == &quot;!&quot;)&#123;</div><div class="line">                if(!frontFailUrl)&#123;</div><div class="line">                    $(&quot;.do-return&quot;).addClass(&quot;hide&quot;);</div><div class="line">                &#125;else&#123;</div><div class="line">                    $(&quot;.do-return&quot;).removeClass(&quot;hide&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;else if(url == &quot;!result&quot;)&#123;</div><div class="line">                $(&quot;.do-return&quot;).addClass(&quot;hide&quot;);</div><div class="line">            &#125;else&#123;</div><div class="line">                $(&quot;.do-return&quot;).removeClass(&quot;hide&quot;);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;())</div><div class="line"></div><div class="line"></div><div class="line">        var route = router.routers[url];</div><div class="line">        if(!!route)&#123;</div><div class="line"></div><div class="line">            if(!route.data)&#123;</div><div class="line"></div><div class="line">                if(!!route.templateURL)&#123;</div><div class="line">                    if(route.templateURL.indexOf(&apos;.js&apos;) != -1)&#123;</div><div class="line"></div><div class="line">                        var script = document.createElement(&apos;script&apos;);</div><div class="line">                        script.async = &quot;async&quot;;</div><div class="line">                        script.src = route.templateURL;</div><div class="line">                        script.onload = function()&#123;</div><div class="line">                            route.controller(window.templates.HTML);</div><div class="line">                            route.data = window.templates.HTML;</div><div class="line">                            $(script).remove();</div><div class="line">                        &#125;;</div><div class="line">                        document.getElementsByTagName(&quot;head&quot;)[0].appendChild(script);</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;else&#123;</div><div class="line"></div><div class="line">                        mymvc.ajax.get(&#123;</div><div class="line">                            url:route.templateURL+&quot;?r=&quot;+Math.random(),</div><div class="line">                            data:&#123;&#125;,</div><div class="line">                            asyn:true,</div><div class="line">                            dataType:&quot;text/html&quot;,</div><div class="line">                            success:function(text)&#123;</div><div class="line">                                //console.log(text);</div><div class="line">                                route.controller(text);</div><div class="line">                                route.data = text;</div><div class="line">                            &#125;,error:function()&#123;</div><div class="line">                                !!route.error &amp;&amp; route.error();</div><div class="line">                                console.log(&quot;ajax 获取失败！&quot;);</div><div class="line">                            &#125;</div><div class="line">                        &#125;);</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line">                &#125;else&#123;</div><div class="line"></div><div class="line">                    route.controller();</div><div class="line">                &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">            &#125;else&#123;</div><div class="line">                console.log(&quot;read from cache !!!!&quot;);</div><div class="line">                route.controller(route.data);</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">        &#125;else&#123;</div><div class="line">            //路径错误</div><div class="line">            !!console &amp;&amp; console.log(&quot;路径错误&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    router.routers = &#123;&#125;;</div><div class="line">    router.prototype = (function()&#123;</div><div class="line"></div><div class="line">        return &#123;</div><div class="line">            init:function()&#123;</div><div class="line">                window.addEventListener(&apos;hashchange&apos;,router.run);</div><div class="line">                window.addEventListener(&apos;load&apos;,router.run);</div><div class="line">                return this;</div><div class="line">            &#125;,</div><div class="line">            when:function(path,templateURL,controller,errorCallback)&#123;</div><div class="line">                router.routers[path] = &#123;templateURL: templateURL</div><div class="line">                    , controller: controller</div><div class="line">                    ,error:errorCallback</div><div class="line">                    ,path:path&#125;;</div><div class="line">                return this;</div><div class="line">            &#125;,</div><div class="line">            run:router.run</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;)();</div></pre></td></tr></table></figure></p>
+<p>该实现集合了一些银联业务功能，其最初来源于如下代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">//前端单页面路由实现</div><div class="line">function Router()&#123;</div><div class="line">	this.currentUrl = &quot;&quot;;</div><div class="line">	this.routes = &#123;&#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Router.prototype.route = function(path, callback)&#123;</div><div class="line">	this.routes[path] = callback || &quot;/&quot;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Router.prototype.refresh = function()&#123;</div><div class="line">	this.currentUrl = location.hash.slice(1);</div><div class="line">	this.routes[this.currentUrl]();</div><div class="line">&#125;</div><div class="line"></div><div class="line">Router.prototype.init = function()&#123;</div><div class="line">	window.addEventListener(&apos;load&apos;, this.refresh.bind(this), false);</div><div class="line">	window.addEventListener(&apos;hashChange&apos;, this.refresh.bind(this), false);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>这样一看就清晰很多，可见实现拆分成以下几步</strong></p>
+<ol>
+<li>声明一个构造函数Router，包含当前路由哈希值，和一个空对象，用来存储路由地址</li>
+<li>向routes对象添加注册路由名，及路由名对应的回调方法</li>
+<li>在Router上声明refresh方法，用来获取当前路由值，并根据路由值执行其对应的回调方法</li>
+<li>init方法用来绑定时间，监听路由变化</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">route.route(&apos;/&apos;,func());</div></pre></td></tr></table></figure>
+<p>实际单页面路由是这么写的，其实这一步就是个注册的过程。将可能的路由名和想要绑定的回调方法注册在一起，需要的时候找到它，并执行其回调函数func()就行啦～</p>
+
+
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+    <hr />
+    <h3>Comments:</h3>
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/lez777/" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="mailto:leyijun666@gmail.com" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-envelope-o fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2018 Ash L<br></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+<script type="text/javascript">
+    var disqus_shortname = '表弟';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+</body>
+
+</html>
